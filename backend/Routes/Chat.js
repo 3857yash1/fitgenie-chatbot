@@ -127,8 +127,14 @@ const router = express.Router();
 
 // Function to call Gemini API
 async function askQuestion(UserInput) {
+<<<<<<< HEAD
   const genAI = new GoogleGenerativeAI(process.env.API_KEY);
   const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+=======
+  try {
+    const genAI = new GoogleGenerativeAI(process.env.API_KEY);
+    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+>>>>>>> ba6facd7df15beef954f374309e26eeff93ce17e
 
   const prompt = `The user has asked a question: ${UserInput}. Respond if the question relates to workouts (such as exercise routines, tips for specific muscle groups, or fitness advice), meal plans (including diet plans, meal suggestions, or healthy recipes), or nutritional information about foods (like "What nutrients are in eggs?" or "How much protein does a banana have?"). Provide a brief and relevant answer to fitness-related queries. Also provide video reference if user asked. If the question is not related to workouts, meals, or nutrition, respond with "I can assist only with questions about workouts, meal plans, and food nutrition."`;
 
