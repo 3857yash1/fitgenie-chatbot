@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom"; // 👈 Import this
 import "./ChangePassword.css";
 
 const ChangePassword = () => {
     const [password, setPassword] = useState("");
     const [newPassword, setNewPassword] = useState("");
     const [message, setMessage] = useState("");
+    const navigate = useNavigate(); // 👈 Hook for navigation
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -43,6 +45,15 @@ const ChangePassword = () => {
                 />
                 <button type="submit">Change Password</button>
             </form>
+
+            {/* ✅ Back to Home button */}
+            <button
+                onClick={() => navigate("/")}
+                className="back-home-button"
+            >
+                Back to Home
+            </button>
+
             {message && <p>{message}</p>}
         </div>
     );

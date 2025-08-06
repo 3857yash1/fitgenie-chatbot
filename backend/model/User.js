@@ -1,19 +1,26 @@
 import mongoose from "mongoose";
-const loginSchema = new mongoose.Schema({
-    Username :{
-        type : String,
-        required : true,
-        unique : true
-    },
-    EmailID : {
+
+const userSchema = new mongoose.Schema({
+    Username: {
         type: String,
-        required: true, 
+        required: true,
         unique: true,
     },
-    Password:{
-        type:String,
-        required:true,
+    EmailID: {
+        type: String,
+        required: true,
+        unique: true,
+    },
+    Password: {
+        type: String,
+        required: true,
+    },
+    Mobile: {
+        type: String, // or Number
+        default: ""
     }
-},{collection:"FitBot"})
-const Login = mongoose.model('Login',loginSchema);
-export default Login;
+}, { collection: "FitBot" });
+
+
+const User = mongoose.model("User", userSchema);
+export default User;

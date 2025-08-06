@@ -130,3 +130,19 @@ button {
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
+.forgot-password {
+    text-align: center;
+    margin-top: 12px;
+    margin-bottom: 8px;
+}
+
+.forgot-password a {
+    color: #e0e0e0;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.forgot-password a:hover {
+    color: white;
+    text-decoration: underline;
+}

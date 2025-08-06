@@ -1,0 +1,75 @@
+.profile-container {
+    max-width: 500px;
+    margin: 50px auto;
+    padding: 30px;
+    background: #f5f5f5;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', sans-serif;
+    color: #333; /* Default dark text */
+}
+
+.profile-container h2 {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #2c3e50;
+}
+
+.profile-field {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.profile-field label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #2c3e50; /* Ensure label text is dark */
+    font-size: 15px;
+}
+
+.profile-field span {
+    color: #333;
+    font-size: 16px;
+}
+
+.profile-field input {
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: white;
+    color: #333;
+}
+
+.profile-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.edit-btn,
+.save-btn,
+.home-btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: #3498db;
+    color: white;
+    transition: background 0.2s ease;
+}
+
+.edit-btn:hover,
+.save-btn:hover,
+.home-btn:hover {
+    background-color: #2980b9;
+}
+
+.message {
+    margin-top: 15px;
+    text-align: center;
+    color: #2c3e50;
+    font-weight: bold;
+}

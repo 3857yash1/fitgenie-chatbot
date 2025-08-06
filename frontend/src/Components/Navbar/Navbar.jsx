@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate } from "react-router-dom"; // ⬅️ Add this
+import { useNavigate } from "react-router-dom"; // ✅ Already imported
 import "./Navbar.css";
 
 const Navbar = ({ scrollToSection, refs }) => {
     const [user, setUser] = useState('');
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef();
-    const navigate = useNavigate(); // ⬅️ Add this
+    const navigate = useNavigate();
 
     const logOut = () => {
         localStorage.clear();
@@ -33,14 +33,19 @@ const Navbar = ({ scrollToSection, refs }) => {
                 <li className="header-para" onClick={() => scrollToSection(refs.homeRef)}>Home</li>
                 <li className="header-para" onClick={() => scrollToSection(refs.aboutRef)}>About Us</li>
                 <li className="header-para" onClick={() => scrollToSection(refs.faqRef)}>FAQ</li>
-                
+
                 <li className="header-para user-dropdown" ref={dropdownRef}>
                     <span onClick={() => setDropdownOpen(!dropdownOpen)}>{user} ▾</span>
                     {dropdownOpen && (
                         <ul className="dropdown-menu">
-                            <li onClick={() => alert("Go to Profile")}>Profile</li>
                             <li onClick={() => {
-                                navigate("/change-password"); // ⬅️ Navigate to route
+                                navigate("/profile"); // ✅ Navigate to /profile
+                                setDropdownOpen(false);
+                            }}>
+                                Profile
+                            </li>
+                            <li onClick={() => {
+                                navigate("/change-password");
                                 setDropdownOpen(false);
                             }}>
                                 Change Password

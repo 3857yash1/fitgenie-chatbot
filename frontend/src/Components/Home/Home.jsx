@@ -14,7 +14,8 @@ const Home = () => {
     const [showBotMessage, setShowBotMessage] = useState(false);
     const messagesEndRef = useRef();
 
-    const username = "SAIKUMAR";
+    const username = localStorage.getItem("Username");
+
 
     const {
         transcript,
@@ -23,18 +24,19 @@ const Home = () => {
         browserSupportsSpeechRecognition
     } = useSpeechRecognition();
 
+    const videoRef = useRef(null);
+
     const openChat = () => {
         const newState = !isOpen;
         setIsOpen(newState);
         if (!isOpen) {
             fetchHistory(); // Load history only when opening
-        }
+            videoRef.current?.pause();
+        } else {
+            videoRef.current?.play();
+        } 
     };
 
-
-    // const openChat = () => {
-    //     setIsOpen(!isOpen);
-    // };
 
     const speakText = (text) => {
         stopSpeaking();
@@ -112,7 +114,8 @@ const Home = () => {
     return (
         <>
             <div className="video-container">
-                <video autoPlay muted loop className="background-video">
+                <video ref={videoRef} autoPlay muted loop className="background-video">
+
                     <source src={videos} type="video/mp4" />
                     Your browser does not support HTML5 video.
                 </video>

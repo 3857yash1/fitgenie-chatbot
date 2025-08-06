@@ -1,71 +1,71 @@
 import express from "express";
-import bcrypt from "bcrypt";
-import User from "../model/User.js";
+import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
 import nodemailer from "nodemailer";
-import dotenv from "dotenv";
-dotenv.config();
+import User from "../model/User.js";
 
 const router = express.Router();
+const JWT_SECRET = process.env.JWT_SECRET || "your-strong-secret-key";
 
-// Email transporter setup
+// ✅ Configure Nodemailer
 const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS
+        user: process.env.EMAIL_USER,       // e.g., your Gmail address
+        pass: process.env.EMAIL_PASSWORD    // Gmail App Password (not regular password!)
     }
 });
 
-// 📨 Route 1: Forgot password — send email
-router.post("/", async (req, res) => {
-    const { EmailID } = req.body;
+// ✅ Forgot Password: Send Reset Email
+router.post("/forgot-password", async (req, res) => {
+    const { email } = req.body;
 
     try {
-        const user = await User.findOne({ EmailID });
+        const user = await User.findOne({ EmailID: email });
+        if (!user) return res.status(404).json({ message: "User not found" });
 
-        if (!user) {
-            return res.status(404).json({ message: "Email not found" });
-        }
+        const secret = JWT_SECRET + user.Password;
+        const token = jwt.sign(
+            { id: user._id, email: user.EmailID },
+            secret,
+            { expiresIn: "15m" }
+        );
 
-        const mailOptions = {
-            from: process.env.MAIL_USER,
-            to: EmailID,
-            subject: "FitGenie – Password Reset Request",
-            text: `Hi ${user.Username},\n\nYou requested a password reset.\n\nClick the link below to reset your password:\n\nhttp://localhost:3000/reset-password/${user._id}\n\n(This is a demo reset link)\n\n- FitGenie Team`
-        };
+        const link = `http://localhost:3000/reset-password/${user._id}/${token}`;
 
-        await transporter.sendMail(mailOptions);
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER,
+            to: user.EmailID,
+            subject: "Reset Your Password",
+            html: `<p>Click <a href="${link}">here</a> to reset your password. This link is valid for 15 minutes.</p>`,
+        });
+
         res.status(200).json({ message: "Reset link sent to your email." });
-    } catch (error) {
-        console.error("Error sending reset email:", error);
-        res.status(500).json({ message: "Something went wrong. Try again later." });
+    } catch (err) {
+        console.error("Error in forgot-password:", err);
+        res.status(500).json({ message: "Server error" });
     }
 });
 
-// 🔐 Route 2: Change password securely using bcrypt
-router.post("/ChangePassword", async (req, res) => {
-    const { username, password, newPassword } = req.body;
+// ✅ Reset Password: Handle Password Update
+router.post("/reset-password/:id/:token", async (req, res) => {
+    const { id, token } = req.params;
+    const { password } = req.body;
 
     try {
-        const user = await User.findOne({ Username: username });
+        const user = await User.findById(id);
+        if (!user) return res.status(404).json({ message: "User not found" });
 
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
+        const secret = JWT_SECRET + user.Password;
+        jwt.verify(token, secret);
 
-        const isMatch = await bcrypt.compare(password, user.Password);
-        if (!isMatch) {
-            return res.status(400).json({ message: "Incorrect current password" });
-        }
+        const hashed = await bcrypt.hash(password, 10);
+        await User.updateOne({ _id: id }, { $set: { Password: hashed } });
 
-        const hashedNewPassword = await bcrypt.hash(newPassword, 10);
-        user.Password = hashedNewPassword;
-        await user.save();
-
-        res.status(200).json({ message: "Password changed successfully" });
-    } catch (error) {
-        console.error("Error changing password:", error);
-        res.status(500).json({ message: "Something went wrong" });
+        res.status(200).json({ message: "Password reset successful!" });
+    } catch (err) {
+        console.error("Error in reset-password:", err);
+        res.status(400).json({ message: "Invalid or expired token" });
     }
 });
 
